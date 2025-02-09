@@ -41,13 +41,8 @@ def generate_response(input_data: InputData):
         result = client.flow.execute(flow_name, input_data.dict())
 
         # Print result in the terminal (console.log equivalent)
-        print("\n========== API RESPONSE ==========")
         print(result)
-        print("=================================\n")
 
         return result
     except Exception as e:
-        print("\n========== ERROR OCCURRED ==========")
-        print(str(e))
-        print("====================================\n")
         raise HTTPException(status_code=500, detail=str(e))
