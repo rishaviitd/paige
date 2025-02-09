@@ -2,7 +2,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from mira_sdk import MiraClient, Flow
+from dotenv import load_dotenv  # Import dotenv to load .env file
 import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI()
 
@@ -15,8 +19,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load API key from environment variable (safer than hardcoding)
-API_KEY = os.getenv("MIRA_API_KEY", "sb-bb42f01a519572327de8dc0794e8f520")
+# Load API key from environment variables
+API_KEY = os.getenv("MIRA_API_KEY")
+if not API_KEY:
+    raise ValueError("API_KEY is not set in the environment variables.")
+
 client = MiraClient(config={"API_KEY": API_KEY})
 
 class InputData(BaseModel):
@@ -44,4 +51,3 @@ def generate_response(input_data: InputData):
         print(str(e))
         print("====================================\n")
         raise HTTPException(status_code=500, detail=str(e))
-
